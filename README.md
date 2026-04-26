@@ -1,4 +1,4 @@
-# 🏪 OtomatPro v2.0 — Otomat Yönetim Sistemi
+# 🏪 OtomatPro v2.0 — Otomat Yönetim Sistemi.
 
 **React + Node.js/Express + PostgreSQL** tabanlı tam stack web uygulaması.
 
