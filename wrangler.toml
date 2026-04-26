@@ -1,7 +1,0 @@
-name = "otomatpro"
-pages_build_output_dir = "frontend/dist"
-compatibility_date = "2024-01-01"
-
-[env.production.vars]
-VITE_SUPABASE_URL = "https://cketmhphppjwlhqkmdlg.supabase.co"
-VITE_SUPABASE_ANON_KEY = "sb_publishable_Q0tM3M0iJuFs_lOcxaWJ-Q_t3qHq6Tn"
