@@ -1,7 +1,7 @@
 // src/pages/Urunler.jsx
 import { useState, useEffect, useRef } from 'react';
 import { api } from '../lib/api.js';
-import { useBarcodeScanner, BarcodeModal, ScanBtn } from '../lib/useBarcode.js';
+import { useBarcodeScanner, BarcodeModal, ScanBtn } from '../lib/useBarcode.jsx';
 
 export default function Urunler({ showToast }) {
   const [urunler, setUrunler] = useState([]);

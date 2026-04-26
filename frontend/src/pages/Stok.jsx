@@ -1,7 +1,7 @@
 // src/pages/Stok.jsx
 import { useState, useEffect } from 'react';
 import { api } from '../lib/api.js';
-import { useBarcodeScanner, BarcodeModal, ScanBtn } from '../lib/useBarcode.js';
+import { useBarcodeScanner, BarcodeModal, ScanBtn } from '../lib/useBarcode.jsx';
 
 export default function Stok({ showToast }) {
   const [urunler, setUrunler] = useState([]);
