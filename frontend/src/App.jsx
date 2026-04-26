@@ -158,7 +158,7 @@ export default function App() {
           </div>
 
           {/* CONTENT */}
-          <div style={{ flex:1, overflowY:'auto', padding:16, WebkitOverflowScrolling:'touch' }}>
+          <div className="main-content-area" style={{ flex:1, overflowY:'auto', padding:16, WebkitOverflowScrolling:'touch' }}>
             {apiOk === false ? (
               <div style={{ textAlign:'center', padding:'60px 20px' }}>
                 <div style={{ fontSize:48, marginBottom:16 }}>⚠️</div>
@@ -188,27 +188,37 @@ export default function App() {
         @media (max-width: 640px) {
           .sidebar-nav { display: none !important; }
           .bottom-nav-mobile { display: flex !important; }
-          div[style*="padding:16px"] { margin-bottom: calc(64px + var(--safe-bottom)); }
+          .main-content-area { padding-bottom: calc(72px + env(safe-area-inset-bottom)) !important; }
         }
+        .bottom-nav-scroll::-webkit-scrollbar { display: none; }
+        .bottom-nav-scroll { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
       <div className="bottom-nav-mobile" style={{
         display:'none', background:'var(--surface)', borderTop:'1px solid var(--border)',
-        padding:`6px 0 calc(6px + var(--safe-bottom))`, justifyContent:'space-around',
+        paddingBottom:`calc(6px + env(safe-area-inset-bottom, 0px))`,
         position:'fixed', bottom:0, left:0, right:0, zIndex:100,
         backdropFilter:'blur(20px)',
+        flexDirection:'column',
       }}>
-        {SCREENS.slice(0, 5).map(s => (
-          <button key={s.id} onClick={() => setScreen(s.id)} style={{
-            display:'flex', flexDirection:'column', alignItems:'center', gap:2,
-            padding:'6px 8px', borderRadius:12, border:'none',
-            background:'transparent',
-            color: screen===s.id ? 'var(--accent)' : 'var(--muted)',
-            fontSize:9, fontWeight:700, minWidth:44,
-          }}>
-            <span style={{ fontSize:20, lineHeight:1 }}>{s.icon}</span>
-            {s.label}
-          </button>
-        ))}
+        <div className="bottom-nav-scroll" style={{
+          display:'flex', overflowX:'auto', overflowY:'hidden',
+          padding:'6px 8px 4px', gap:2, scrollSnapType:'x mandatory',
+          WebkitOverflowScrolling:'touch',
+        }}>
+          {SCREENS.map(s => (
+            <button key={s.id} onClick={() => setScreen(s.id)} style={{
+              display:'flex', flexDirection:'column', alignItems:'center', gap:2,
+              padding:'6px 10px', borderRadius:12, border:'none', flexShrink:0,
+              background: screen===s.id ? 'rgba(0,229,160,0.12)' : 'transparent',
+              color: screen===s.id ? 'var(--accent)' : 'var(--muted)',
+              fontSize:9, fontWeight:700, minWidth:52, scrollSnapAlign:'start',
+              transition:'all 0.15s',
+            }}>
+              <span style={{ fontSize:20, lineHeight:1 }}>{s.icon}</span>
+              {s.label}
+            </button>
+          ))}
+        </div>
       </div>
     </ToastCtx.Provider>
   );

@@ -1,5 +1,5 @@
 // src/pages/Urunler.jsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { api } from '../lib/api.js';
 
 export default function Urunler({ showToast }) {
@@ -10,7 +10,60 @@ export default function Urunler({ showToast }) {
   const [form, setForm]       = useState({ barcode:'', name:'', cat:'📦 Diğer', unit:'Adet', abc:'B', f1:'', f2:'', f3:'' });
   const [editId, setEditId]   = useState(null);
   const [csvFile, setCsvFile] = useState(null);
+  const [scanMode, setScanMode] = useState(false);
+  const [scanError, setScanError] = useState('');
   const fileRef = useRef();
+  const videoRef = useRef();
+  const streamRef = useRef(null);
+  const animRef = useRef(null);
+
+  // Barcode Scanner helpers
+  const stopCamera = useCallback(() => {
+    if (animRef.current) { cancelAnimationFrame(animRef.current); animRef.current = null; }
+    if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); streamRef.current = null; }
+  }, []);
+
+  const startCamera = useCallback(async () => {
+    setScanError('');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1280 } } });
+      streamRef.current = stream;
+      if (videoRef.current) { videoRef.current.srcObject = stream; await videoRef.current.play(); }
+      // Use BarcodeDetector if available
+      if ('BarcodeDetector' in window) {
+        const detector = new window.BarcodeDetector({ formats: ['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code','data_matrix'] });
+        const scan = async () => {
+          if (!videoRef.current || !streamRef.current) return;
+          try {
+            const codes = await detector.detect(videoRef.current);
+            if (codes.length > 0) {
+              const val = codes[0].rawValue;
+              setForm(f => ({ ...f, barcode: val }));
+              // search existing
+              const found = urunler.find(u => u.barcode === val);
+              if (found) { startEdit(found); showToast('✅ Ürün bulundu: ' + found.name); }
+              else { showToast('📦 Barkod tarandı: ' + val, 'info'); }
+              stopCamera();
+              setScanMode(false);
+              return;
+            }
+          } catch {}
+          animRef.current = requestAnimationFrame(scan);
+        };
+        animRef.current = requestAnimationFrame(scan);
+      } else {
+        setScanError('Tarayıcınız BarcodeDetector desteklemiyor. Barkodu manuel girin.');
+      }
+    } catch (e) {
+      setScanError('Kamera erişimi reddedildi. Ayarlardan izin verin.');
+    }
+  }, [urunler, stopCamera]);
+
+  useEffect(() => {
+    if (scanMode) startCamera();
+    else stopCamera();
+    return () => stopCamera();
+  }, [scanMode]);
 
   const load = () => {
     api.urunler.list({ search, cat: catFilter })
@@ -89,9 +142,50 @@ export default function Urunler({ showToast }) {
           {editId ? '✏️ Ürün Düzenle' : '✨ Yeni Ürün Ekle'}
         </div>
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:8 }}>
-          <div><label style={{ fontSize:11, fontWeight:700, color:'var(--muted)', display:'block', marginBottom:4 }}>Barkod</label><input {...inp('barcode')} placeholder="8690597820016" /></div>
+          <div>
+            <label style={{ fontSize:11, fontWeight:700, color:'var(--muted)', display:'block', marginBottom:4 }}>Barkod</label>
+            <div style={{ display:'flex', gap:6 }}>
+              <input {...inp('barcode')} placeholder="8690597820016" style={{ ...inp('barcode').style, flex:1 }} />
+              <button onClick={() => setScanMode(true)} title="Kamera ile barkod tara" style={{
+                padding:'10px 12px', borderRadius:10, border:'1.5px solid var(--border)',
+                background:'var(--surface2)', color:'var(--accent2)', fontSize:18, cursor:'pointer', flexShrink:0,
+              }}>📷</button>
+            </div>
+          </div>
           <div><label style={{ fontSize:11, fontWeight:700, color:'var(--muted)', display:'block', marginBottom:4 }}>Ürün Adı *</label><input {...inp('name')} placeholder="Coca-Cola 330ml" /></div>
         </div>
+
+        {/* Barcode Scanner Modal */}
+        {scanMode && (
+          <div style={{
+            position:'fixed', inset:0, background:'rgba(0,0,0,0.88)', zIndex:9999,
+            display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
+          }}>
+            <div style={{ background:'var(--surface)', borderRadius:20, padding:20, width:'min(95vw,420px)', border:'1px solid var(--border)' }}>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14 }}>
+                <span style={{ fontFamily:'var(--font-head)', fontWeight:700, fontSize:14 }}>📷 Barkod Tara</span>
+                <button onClick={() => setScanMode(false)} style={{ padding:'4px 10px', borderRadius:8, border:'none', background:'rgba(255,77,109,0.15)', color:'var(--danger)', fontWeight:700, fontSize:13, cursor:'pointer' }}>✕ Kapat</button>
+              </div>
+              <div style={{ position:'relative', borderRadius:14, overflow:'hidden', background:'#000', aspectRatio:'4/3' }}>
+                <video ref={videoRef} autoPlay playsInline muted style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }} />
+                <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', pointerEvents:'none' }}>
+                  <div style={{ width:'70%', height:'24%', border:'2.5px solid var(--accent)', borderRadius:8, boxShadow:'0 0 0 2000px rgba(0,0,0,0.38)' }} />
+                </div>
+                <div style={{ position:'absolute', bottom:10, left:0, right:0, textAlign:'center', color:'rgba(255,255,255,0.8)', fontSize:11 }}>
+                  Barkodu çerçeve içine getirin
+                </div>
+              </div>
+              {scanError && (
+                <div style={{ marginTop:12, padding:'10px 12px', borderRadius:10, background:'rgba(255,77,109,0.12)', color:'var(--danger)', fontSize:12, textAlign:'center' }}>
+                  ⚠️ {scanError}
+                </div>
+              )}
+              <div style={{ marginTop:12, textAlign:'center', fontSize:11, color:'var(--muted)' }}>
+                Barkod algılandığında kamera otomatik kapanır
+              </div>
+            </div>
+          </div>
+        )}
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:8 }}>
           <div>
             <label style={{ fontSize:11, fontWeight:700, color:'var(--muted)', display:'block', marginBottom:4 }}>Kategori</label>
