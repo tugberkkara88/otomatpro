@@ -1,142 +1,26 @@
 // src/pages/Ayarlar.jsx
 import { useState, useEffect } from 'react';
 import { api } from '../lib/api.js';
-/* ─────────────────────────────────────────────────
-   Ayarlar.jsx içindeki tema bölümü için örnek kod
-   ───────────────────────────────────────────────── */
 
-import { useTheme } from '../components/ThemePicker';
+const THEMES = [
+  // Koyu temalar
+  { id: 'emerald',  label: 'Emerald',  accent: '#00e5a0', bg: '#0d0f14',  dark: true  },
+  { id: 'ocean',    label: 'Ocean',    accent: '#38bdf8', bg: '#060e1a',  dark: true  },
+  { id: 'sunset',   label: 'Sunset',   accent: '#fb923c', bg: '#110a00',  dark: true  },
+  { id: 'violet',   label: 'Violet',   accent: '#a78bfa', bg: '#0c0a18',  dark: true  },
+  { id: 'rose',     label: 'Rose',     accent: '#f472b6', bg: '#110810',  dark: true  },
+  { id: 'arctic',   label: 'Arctic',   accent: '#67e8f9', bg: '#050f18',  dark: true  },
+  { id: 'lava',     label: 'Lava',     accent: '#ff4500', bg: '#120400',  dark: true  },
+  { id: 'forest',   label: 'Forest',   accent: '#4ade80', bg: '#020e06',  dark: true  },
+  { id: 'midnight', label: 'Midnight', accent: '#ffffff', bg: '#000000',  dark: true  },
+  { id: 'sakura',   label: 'Sakura',   accent: '#fda4af', bg: '#0f080d',  dark: true  },
+  { id: 'coffee',   label: 'Coffee',   accent: '#d97706', bg: '#0e0a06',  dark: true  },
+  { id: 'neon',     label: 'Neon',     accent: '#00ffcc', bg: '#000510',  dark: true  },
+  // Açık tema
+  { id: 'graphite', label: 'Graphite', accent: '#6366f1', bg: '#f0f2f5',  dark: false },
+];
 
-// Ayarlar bileşeninin içinde:
-function TemaAyarlari() {
-  const { theme, setTheme, themes } = useTheme();
-
-  return (
-    <section style={{
-      background: 'var(--bg-card)',
-      border: '1px solid var(--border)',
-      borderRadius: 'var(--radius)',
-      padding: '24px',
-      marginBottom: '20px',
-    }}>
-      <h2 style={{
-        fontSize: '16px',
-        fontWeight: 600,
-        color: 'var(--text-primary)',
-        margin: '0 0 6px',
-      }}>🎨 Görünüm Teması</h2>
-      <p style={{
-        fontSize: '13px',
-        color: 'var(--text-secondary)',
-        margin: '0 0 20px',
-      }}>
-        Arayüzün renk temasını seçin. Tercih tarayıcıda saklanır.
-      </p>
-
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-        gap: '12px',
-      }}>
-        {themes.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setTheme(t.id)}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              padding: '14px',
-              background: theme === t.id ? 'var(--nav-active-bg)' : 'var(--bg-secondary)',
-              border: `1.5px solid ${theme === t.id ? 'var(--accent)' : 'var(--border)'}`,
-              borderRadius: 'var(--radius)',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              fontFamily: 'inherit',
-              textAlign: 'left',
-            }}
-          >
-            {/* Büyük önizleme */}
-            <div style={{
-              width: '100%',
-              height: '48px',
-              borderRadius: '8px',
-              background: t.bg,
-              border: '1px solid rgba(255,255,255,0.08)',
-              position: 'relative',
-              overflow: 'hidden',
-            }}>
-              {/* Sahte kenar çubuğu */}
-              <div style={{
-                position: 'absolute',
-                left: 0, top: 0, bottom: 0,
-                width: '28%',
-                background: t.dark
-                  ? 'rgba(0,0,0,0.3)'
-                  : 'rgba(0,0,0,0.05)',
-              }} />
-              {/* Vurgu çizgisi */}
-              <div style={{
-                position: 'absolute',
-                left: '32%',
-                right: '8%',
-                bottom: '8px',
-                height: '4px',
-                borderRadius: '2px',
-                background: t.accent,
-              }} />
-              {/* Sahte içerik çizgileri */}
-              {[24, 16].map((w, i) => (
-                <div key={i} style={{
-                  position: 'absolute',
-                  left: '32%',
-                  top: `${10 + i * 9}px`,
-                  width: `${w}%`,
-                  height: '3px',
-                  borderRadius: '2px',
-                  background: t.dark
-                    ? 'rgba(255,255,255,0.12)'
-                    : 'rgba(0,0,0,0.1)',
-                }} />
-              ))}
-            </div>
-
-            {/* İsim ve aktif badge */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{
-                fontSize: '13px',
-                fontWeight: 600,
-                color: theme === t.id ? 'var(--accent)' : 'var(--text-primary)',
-              }}>
-                {t.label}
-              </span>
-              {theme === t.id && (
-                <span style={{
-                  fontSize: '10px',
-                  background: 'var(--accent)',
-                  color: '#000',
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  fontWeight: 700,
-                }}>✓</span>
-              )}
-            </div>
-
-            {/* Açık/Koyu etiketi */}
-            <span style={{
-              fontSize: '11px',
-              color: 'var(--text-muted)',
-            }}>
-              {t.dark ? '🌙 Koyu' : '☀️ Açık'}
-            </span>
-          </button>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-export default function Ayarlar({ showToast, machineCount }) {
+export default function Ayarlar({ showToast, machineCount, theme, setTheme }) {
   const [makinalar, setMakinalar] = useState([]);
   const [urunSayisi, setUrunSayisi] = useState(0);
 
@@ -164,6 +48,57 @@ export default function Ayarlar({ showToast, machineCount }) {
 
   return (
     <div>
+      {/* Tema Seçici */}
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, marginBottom: 14 }}>
+        <div style={{ fontFamily: 'var(--font-head)', fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 14 }}>🎨 Tema</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 10 }}>
+          {THEMES.map(t => {
+            const active = theme === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => { setTheme(t.id); showToast(`🎨 ${t.label} teması uygulandı`); }}
+                style={{
+                  position: 'relative',
+                  background: t.bg,
+                  border: active ? `2px solid ${t.accent}` : '2px solid transparent',
+                  borderRadius: 12,
+                  padding: '12px 12px 10px',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.2s',
+                  outline: 'none',
+                  boxShadow: active ? `0 0 0 1px ${t.accent}40` : 'none',
+                }}
+              >
+                {/* Preview bar */}
+                <div style={{ height: 4, borderRadius: 4, background: t.accent, marginBottom: 10, width: '80%', opacity: 0.9 }} />
+                {/* Label */}
+                <div style={{
+                  fontFamily: 'Syne, sans-serif',
+                  fontSize: 12, fontWeight: 700,
+                  color: t.dark ? '#e8eaf2' : '#111827',
+                  marginBottom: 3,
+                }}>{t.label}</div>
+                <div style={{ fontSize: 10, color: t.dark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', gap: 3 }}>
+                  {t.dark ? '🌙' : '☀️'} {t.dark ? 'Koyu' : 'Açık'}
+                </div>
+                {/* Active check */}
+                {active && (
+                  <div style={{
+                    position: 'absolute', top: 8, right: 8,
+                    width: 18, height: 18, borderRadius: '50%',
+                    background: t.accent,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 10,
+                  }}>✓</div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Sistem bilgisi */}
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, padding: 16, marginBottom: 14 }}>
         <div style={{ fontFamily: 'var(--font-head)', fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>⚙️ Sistem Bilgisi</div>

@@ -1,7 +1,8 @@
 /* OtomatPro Global Styles */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Nunito:wght@400;500;600;700&display=swap');
-@import './themes.css';
-:root {
+
+:root,
+[data-theme="emerald"] {
   --bg: #0d0f14;
   --surface: #161922;
   --surface2: #1e2330;
@@ -18,6 +19,186 @@
   --font-body: 'Nunito', sans-serif;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --radius: 12px;
+}
+
+/* ── OCEAN ── */
+[data-theme="ocean"] {
+  --bg: #060e1a;
+  --surface: #0d1f35;
+  --surface2: #142840;
+  --border: #1e3a55;
+  --accent: #38bdf8;
+  --accent2: #818cf8;
+  --accent3: #34d399;
+  --warn: #fbbf24;
+  --danger: #f87171;
+  --text: #e0f2fe;
+  --muted: #5b8db8;
+}
+
+/* ── SUNSET ── */
+[data-theme="sunset"] {
+  --bg: #110a00;
+  --surface: #1f1208;
+  --surface2: #2a1a0e;
+  --border: #3d2510;
+  --accent: #fb923c;
+  --accent2: #fbbf24;
+  --accent3: #f472b6;
+  --warn: #facc15;
+  --danger: #f87171;
+  --text: #fef3e2;
+  --muted: #a07040;
+}
+
+/* ── VIOLET ── */
+[data-theme="violet"] {
+  --bg: #0c0a18;
+  --surface: #16122a;
+  --surface2: #1e1838;
+  --border: #2e2650;
+  --accent: #a78bfa;
+  --accent2: #e879f9;
+  --accent3: #34d399;
+  --warn: #fbbf24;
+  --danger: #fb7185;
+  --text: #ede9fe;
+  --muted: #7c6aaa;
+}
+
+/* ── GRAPHITE (Light) ── */
+[data-theme="graphite"] {
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --surface2: #e8eaee;
+  --border: #d1d5db;
+  --accent: #6366f1;
+  --accent2: #8b5cf6;
+  --accent3: #059669;
+  --warn: #d97706;
+  --danger: #dc2626;
+  --text: #111827;
+  --muted: #6b7280;
+}
+
+/* ── ROSE ── */
+[data-theme="rose"] {
+  --bg: #110810;
+  --surface: #1e1020;
+  --surface2: #281530;
+  --border: #3d1e45;
+  --accent: #f472b6;
+  --accent2: #fb7185;
+  --accent3: #a78bfa;
+  --warn: #fbbf24;
+  --danger: #f43f5e;
+  --text: #fce7f3;
+  --muted: #9b5fa0;
+}
+
+/* ── ARCTIC ── */
+[data-theme="arctic"] {
+  --bg: #050f18;
+  --surface: #0a1e30;
+  --surface2: #102840;
+  --border: #1a3a54;
+  --accent: #67e8f9;
+  --accent2: #38bdf8;
+  --accent3: #a3e635;
+  --warn: #fde68a;
+  --danger: #f87171;
+  --text: #e0faff;
+  --muted: #4a9dbf;
+}
+
+/* ── LAVA ── */
+[data-theme="lava"] {
+  --bg: #120400;
+  --surface: #220a00;
+  --surface2: #300e00;
+  --border: #4a1500;
+  --accent: #ff4500;
+  --accent2: #ff8c00;
+  --accent3: #ffd700;
+  --warn: #fbbf24;
+  --danger: #dc2626;
+  --text: #fff1ee;
+  --muted: #a04020;
+}
+
+/* ── FOREST ── */
+[data-theme="forest"] {
+  --bg: #020e06;
+  --surface: #071a0e;
+  --surface2: #0e2416;
+  --border: #163520;
+  --accent: #4ade80;
+  --accent2: #86efac;
+  --accent3: #fbbf24;
+  --warn: #f59e0b;
+  --danger: #f87171;
+  --text: #ecfdf5;
+  --muted: #3d7a52;
+}
+
+/* ── MIDNIGHT ── */
+[data-theme="midnight"] {
+  --bg: #000000;
+  --surface: #111111;
+  --surface2: #1a1a1a;
+  --border: #2a2a2a;
+  --accent: #ffffff;
+  --accent2: #aaaaaa;
+  --accent3: #666666;
+  --warn: #ffd166;
+  --danger: #ff4d6d;
+  --text: #f5f5f5;
+  --muted: #555555;
+}
+
+/* ── SAKURA ── */
+[data-theme="sakura"] {
+  --bg: #0f080d;
+  --surface: #1e1018;
+  --surface2: #2a1622;
+  --border: #3d2030;
+  --accent: #fda4af;
+  --accent2: #fbcfe8;
+  --accent3: #c084fc;
+  --warn: #fde68a;
+  --danger: #fb7185;
+  --text: #fdf2f8;
+  --muted: #9a6070;
+}
+
+/* ── COFFEE ── */
+[data-theme="coffee"] {
+  --bg: #0e0a06;
+  --surface: #1e1510;
+  --surface2: #2a1e15;
+  --border: #3d2e20;
+  --accent: #d97706;
+  --accent2: #92400e;
+  --accent3: #78716c;
+  --warn: #fbbf24;
+  --danger: #dc2626;
+  --text: #fef9f0;
+  --muted: #a07850;
+}
+
+/* ── NEON ── */
+[data-theme="neon"] {
+  --bg: #000510;
+  --surface: #020d20;
+  --surface2: #06152e;
+  --border: #0a2040;
+  --accent: #00ffcc;
+  --accent2: #ff00ff;
+  --accent3: #00ccff;
+  --warn: #ffff00;
+  --danger: #ff0044;
+  --text: #e0ffff;
+  --muted: #406080;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }

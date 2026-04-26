@@ -1,7 +1,6 @@
 // src/App.jsx
 import { useState, useEffect, createContext, useContext } from 'react';
 import { api } from './lib/api.js';
-import ThemePicker from './components/ThemePicker';
 
 // Pages
 import Dashboard  from './pages/Dashboard.jsx';
@@ -35,6 +34,12 @@ export default function App() {
   const [toast, setToast]       = useState(null);
   const [apiOk, setApiOk]       = useState(null);
   const [machineCount, setMachineCount] = useState('—');
+  const [theme, setTheme]       = useState(() => localStorage.getItem('op-theme') || 'emerald');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('op-theme', theme);
+  }, [theme]);
 
   // Toast helper
   const showToast = (msg, type = 'ok') => {
@@ -65,7 +70,7 @@ export default function App() {
       case 'makinalar':  return <Makinalar  showToast={showToast} />;
       case 'raporlar':   return <Raporlar   showToast={showToast} />;
       case 'arizalar':   return <Arizalar   showToast={showToast} />;
-      case 'ayarlar':    return <Ayarlar    showToast={showToast} machineCount={machineCount} />;
+      case 'ayarlar':    return <Ayarlar    showToast={showToast} machineCount={machineCount} theme={theme} setTheme={setTheme} />;
       default:           return <Dashboard  showToast={showToast} />;
     }
   };
@@ -123,10 +128,6 @@ export default function App() {
             }} />
             <span style={{ fontSize:7, color:'var(--muted)' }}>API</span>
           </div>
-                  {/* --- BURAYA EKLE --- */}
-        <div style={{ marginTop: 'auto', paddingBottom: 12 }}>
-          <ThemePicker />
-        </div>
         </nav>
 
         {/* MAIN */}
