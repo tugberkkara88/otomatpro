@@ -1,6 +1,7 @@
 // src/App.jsx
 import { useState, useEffect, createContext, useContext } from 'react';
 import { api } from './lib/api.js';
+import ThemePicker from './components/ThemePicker';
 
 // Pages
 import Dashboard  from './pages/Dashboard.jsx';
@@ -122,6 +123,10 @@ export default function App() {
             }} />
             <span style={{ fontSize:7, color:'var(--muted)' }}>API</span>
           </div>
+                  {/* --- BURAYA EKLE --- */}
+        <div style={{ marginTop: 'auto', paddingBottom: 12 }}>
+          <ThemePicker />
+        </div>
         </nav>
 
         {/* MAIN */}
